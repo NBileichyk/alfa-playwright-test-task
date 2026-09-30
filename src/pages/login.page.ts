@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './base.page';
 
 export class LoginPage extends BasePage {
@@ -13,11 +13,18 @@ export class LoginPage extends BasePage {
     this.loginButton = page.getByRole('button', { name: 'Login' });
   }
 
-  successMessage: Locator = this.page.locator('.notice.success').filter({ hasText: 'You are now logged in as' });
-
   async login(email: string, pass: string) {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(pass);
     await this.loginButton.click();
+  }
+
+  // Method to verify the successful login message with dynamic first and last name
+  async verifySuccessfulLogin(firstName: string, lastName: string) {
+    const successMessage = this.page
+      .locator('.notice.success')
+      .filter({ hasText: `You are now logged in as ${firstName} ${lastName}` });
+
+    await expect(successMessage).toBeVisible();
   }
 }

@@ -1,0 +1,20 @@
+{
+  "standardUser": {
+    "email": "bileichyknatallia@gmail.com",
+    "password": "0123456789",
+    "firstName": "Natallia",
+    "lastName": "Bileichyk"
+  },
+  "adminUser": {
+    "email": "user_admin@example.com",
+    "password": "AdminPassword456!",
+    "firstName": "Natallia",
+    "lastName": "Bileichyk"
+  },
+  "premiumUser": {
+    "email": "user_premium@example.com",
+    "password": "PremiumPassword789!",
+    "firstName": "Natallia",
+    "lastName": "Bileichyk"
+  }
+}
