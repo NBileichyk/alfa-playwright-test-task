@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { COMMON_CONSTANTS } from '../constants/common.constants';
 
 export class CartComponent {
-  private readonly page: Page;
   private readonly cartWrapper: Locator;
 
   readonly image: Locator;
@@ -12,19 +12,22 @@ export class CartComponent {
   readonly checkoutLink: Locator;
 
   constructor(page: Page) {
-    this.page = page;
     this.cartWrapper = page.locator('#cart-wrapper > #cart');
 
     this.image = this.cartWrapper.locator('a.image');
+    this.checkoutLink = this.cartWrapper
+      .locator('a.link')
+      .filter({ hasText: COMMON_CONSTANTS.checkoutLink });
 
     // Sub-elements inside the content block
     this.content = this.cartWrapper.locator('a.content');
-    this.cartText = this.content.locator('text=Cart:');
+    this.cartText = this.content.getByText(COMMON_CONSTANTS.cartLabel);
     this.quantity = this.content.locator('.quantity');
     this.formattedValue = this.content.locator('.formatted_value');
+  }
 
-    // Selector for the link with the exact text "Checkout"
-    this.checkoutLink = this.cartWrapper.locator('a.link').filter({ hasText: 'Checkout' });
+  async clickCart() {
+    await this.cartWrapper.click();
   }
 
   async clickCheckoutLink() {
@@ -33,6 +36,19 @@ export class CartComponent {
 
   async verifyCartIsVisible() {
     await expect(this.cartWrapper).toBeVisible();
+  }
+
+  async hasItems(): Promise<boolean> {
+    const quantityText = await this.quantity.textContent();
+    return Number(quantityText ?? 0) > 0;
+  }
+
+  async verifyCartSummary(expectedQuantity: number, expectedTotal?: number) {
+    await this.verifyCartQuantity(expectedQuantity);
+
+    if (expectedTotal !== undefined) {
+      await this.verifyCartTotal(expectedTotal);
+    }
   }
 
   // Verify expected quantity of items in the cart
@@ -47,7 +63,6 @@ export class CartComponent {
 
   // Verify that the cart is empty
   async verifyCartIsEmpty() {
-    this.verifyCartQuantity(0);
-    this.verifyCartQuantity(0);
+    await this.verifyCartQuantity(0);
   }
 }

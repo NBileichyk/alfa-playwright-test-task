@@ -1,6 +1,10 @@
 name: Playwright Tests with Allure
 
 on:
+  # Проверка при каждом изменении кода
+  push:
+  pull_request:
+
   # 1. Запуск вручную из вкладки Actions на GitHub (workflow_dispatch)
   workflow_dispatch:
     inputs:
@@ -36,11 +40,11 @@ jobs:
 
       # Устанавливаем зависимости проекта
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
       # Устанавливаем браузеры Playwright
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
       # Java необходима для работы Allure CLI
       - name: Set up Java
@@ -60,7 +64,12 @@ jobs:
       # Генерируем Allure HTML-отчет из результатов
       - name: Generate Allure Report
         if: always()
-        run: npx allure generate allure-results --clean -o allure-report
+        run: |
+          if [ -n "$(find allure-results -type f -print -quit 2>/dev/null)" ]; then
+            npx allure generate allure-results --clean -o allure-report
+          else
+            echo "::warning::No Allure results were generated; skipping report generation."
+          fi
 
       # Сохраняем Allure-отчет в артефактах GitHub
       - name: Upload Allure Report
@@ -69,6 +78,7 @@ jobs:
         with:
           name: allure-report
           path: allure-report/
+          if-no-files-found: ignore
           retention-days: 30
 
       # Сохраняем HTML-отчет (если он успел создаться)

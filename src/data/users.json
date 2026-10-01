@@ -1,20 +1,20 @@
 {
-  "standardUser": {
+  "standardUser_1": {
     "email": "bileichyknatallia@gmail.com",
     "password": "0123456789",
     "firstName": "Natallia",
     "lastName": "Bileichyk"
   },
-  "adminUser": {
-    "email": "user_admin@example.com",
-    "password": "AdminPassword456!",
-    "firstName": "Natallia",
-    "lastName": "Bileichyk"
+  "standardUser_2": {
+    "email": "duckduck@mail.ru",
+    "password": "0123456789",
+    "firstName": "Duck",
+    "lastName": "Duck"
   },
-  "premiumUser": {
-    "email": "user_premium@example.com",
-    "password": "PremiumPassword789!",
-    "firstName": "Natallia",
-    "lastName": "Bileichyk"
+  "invalidUser": {
+    "email": "user_invalid@example.com",
+    "password": "InvalidPassword123!",
+    "firstName": "",
+    "lastName": ""
   }
 }
