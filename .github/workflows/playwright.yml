@@ -1,27 +1,72 @@
-name: Playwright Tests
+name: Playwright Tests with Allure
+
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  # 1. Запуск вручную из вкладки Actions на GitHub (workflow_dispatch)
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'Browser to run tests'
+        required: true
+        default: 'chromium'
+        type: choice
+        options:
+          - chromium
+          - firefox
+          - webkit
+
+  # 2. Запуск по расписанию: Понедельник - Пятница в 08:00 UTC (cron)
+  schedule:
+    - cron: '0 8 * * 1-5'
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      # Клонируем репозиторий
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Устанавливаем Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Устанавливаем зависимости проекта
+      - name: Install dependencies
+        run: npm ci
+
+      # Устанавливаем браузеры Playwright
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+        # Java необходима для работы Allure CLI
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Запускаем тесты (передаем переменные окружения из GitHub Secrets, если они нужны)
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+
+      # Генерируем Allure HTML-отчет из результатов
+      - name: Generate Allure Report
+        if: always()
+        run: npx allure generate allure-results --clean -o allure-report
+
+      # Сохраняем Allure-отчет в артефактах GitHub
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
