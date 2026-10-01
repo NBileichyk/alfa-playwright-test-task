@@ -3,6 +3,7 @@ import usersData from '../data/users.json' with { type: 'json' };
 import { LoginPage } from '../pages/login.page';
 import { CatalogPage } from '../pages/catalog.page';
 import { CheckoutPage } from '../pages/checkout.page';
+import { ProductPage } from '../pages/product.page';
 
 // Define available user roles from our JSON file
 type UserRole = keyof typeof usersData;
@@ -13,6 +14,7 @@ type MyFixtures = {
   loginAsUser: (role?: UserRole) => Promise<void>;
   catalogPage: CatalogPage;
   checkoutPage: CheckoutPage;
+  productPage: ProductPage;
 };
 
 export const test = base.extend<MyFixtures>({
@@ -28,7 +30,11 @@ export const test = base.extend<MyFixtures>({
     await use(new CheckoutPage(page));
   },
 
-  loginAsUser: async ({ page, loginPage }, use) => {
+  productPage: async ({ page }, use) => {
+    await use(new ProductPage(page));
+  },
+
+  loginAsUser: async ({ loginPage }, use) => {
     const loginFn = async (role: UserRole = 'standardUser') => {
       const user = usersData[role];
 
