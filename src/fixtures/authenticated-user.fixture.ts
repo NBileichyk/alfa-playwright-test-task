@@ -2,27 +2,31 @@ import { test as base } from './page.fixtures';
 import usersData from '../data/users.json' with { type: 'json' };
 
 type UserRole = Exclude<keyof typeof usersData, 'invalidUser'>;
+type UserData = (typeof usersData)[UserRole];
 
 type AuthenticatedUserFixtures = {
-  authenticatedUser: void;
+  loggedInUser: void;
+  currentUser: UserData;
   userRole: UserRole;
 };
 
 export const authenticatedTest = base.extend<AuthenticatedUserFixtures>({
   userRole: ['standardUser_1', { option: true }],
 
-  authenticatedUser: [
-    async ({ homePage, checkoutPage, loginPage, userRole }, use) => {
-      const user = usersData[userRole];
+  currentUser: async ({ userRole }, use) => {
+    await use(usersData[userRole]);
+  },
 
+  loggedInUser: [
+    async ({ homePage, categoryPage, loginPage, currentUser }, use) => {
       await homePage.navigate('/login');
-      await loginPage.login(user.email, user.password);
-      await loginPage.verifySuccessfulLogin(user.firstName, user.lastName);
+      await loginPage.login(currentUser.email, currentUser.password);
+      await loginPage.verifySuccessfulLoginMessage(currentUser.firstName, currentUser.lastName);
 
       try {
         await use();
       } finally {
-        await checkoutPage.clickHomeAfterSuccessfulOrder();
+        await categoryPage.openCategory();
         await loginPage.logout();
       }
     },

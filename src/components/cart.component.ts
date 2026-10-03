@@ -43,6 +43,18 @@ export class CartComponent {
     return Number(quantityText ?? 0) > 0;
   }
 
+  async getTotal(): Promise<number> {
+    const formattedTotal = await this.formattedValue.innerText();
+    const amount = formattedTotal.replace(/[^0-9.-]/g, '');
+    const total = Number(amount);
+
+    if (amount === '' || !Number.isFinite(total)) {
+      throw new Error(`Unable to read the cart total from "${formattedTotal}".`);
+    }
+
+    return total;
+  }
+
   async verifyCartSummary(expectedQuantity: number, expectedTotal?: number) {
     await this.verifyCartQuantity(expectedQuantity);
 

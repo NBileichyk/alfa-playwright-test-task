@@ -2,7 +2,7 @@ import { test, expect } from '../src/fixtures/page.fixtures';
 import { LOGIN_PAGE_CONSTANTS } from '../src/constants/login.constants';
 import usersData from '../src/data/users.json' with { type: 'json' };
 
-test.describe('Successful login', () => {
+test.describe('Login with valid user', () => {
   test('Authenticate with valid user credentials', async ({ loginPage }) => {
     const user = usersData.standardUser_1;
 
@@ -12,9 +12,8 @@ test.describe('Successful login', () => {
     });
 
     await test.step('Show the successful login message', async () => {
-      await expect(
-        loginPage.getSuccessfulLoginMessage(user.firstName, user.lastName)
-      ).toBeVisible();
+      await loginPage.verifySuccessfulLoginMessage(user.firstName, user.lastName);
+      
     });
   });
 });
@@ -29,10 +28,8 @@ test.describe('Login with invalid user', () => {
       );
     });
 
-    await test.step('Show an invalid credentials error', async () => {
-      await expect(loginPage.invalidLoginErrorMessage).toContainText(
-        LOGIN_PAGE_CONSTANTS.invalidLoginMessage
-      );
+    await test.step('Show an invalid login notification', async () => {
+      await loginPage.verifyInvalidLoginErrorMessage();
     });
   });
 });
