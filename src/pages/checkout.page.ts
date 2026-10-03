@@ -69,10 +69,6 @@ export class CheckoutPage extends BasePage {
     }
   }
 
-
-
-
-
   async clickBackLink() {
     await this.backLink.click();
   }
@@ -84,8 +80,4 @@ export class CheckoutPage extends BasePage {
   async verifyOrderSuccess() {
     await expect(this.orderSuccessMessage).toBeVisible();
   }
-
-  
-
-  
 }

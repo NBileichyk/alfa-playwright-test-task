@@ -16,6 +16,7 @@ test.describe('Guest order flow', () => {
       firstProduct = await categoryPage.openProductByIndex(0);
       await productPage.verifyProductTitle(firstProduct.name);
       await productPage.addProductToCart();
+      //!!! ASSERT
     });
 
     await test.step('Open the category page and add the second product to the cart', async () => {
@@ -23,6 +24,7 @@ test.describe('Guest order flow', () => {
       secondProduct = await categoryPage.openProductByIndex(1);
       await productPage.verifyProductTitle(secondProduct.name);
       await productPage.addProductToCart();
+      //!!! ASSERT
     });
 
     await test.step('Verify that both products are in the order summary', async () => {

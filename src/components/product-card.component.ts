@@ -1,4 +1,4 @@
-import { Locator, expect } from '@playwright/test';
+import { Locator } from '@playwright/test';
 
 /**
  * Represents a single product card component used across multiple pages.
@@ -31,13 +31,6 @@ export class ProductCardComponent {
   }
 
   /**
-   * Clicks on the search icon to view product details
-   */
-  async clickSearchIcon() {
-    await this.searchIcon.click();
-  }
-
-  /**
    * Gets the product name text
    */
   async getProductName(): Promise<string> {
@@ -55,13 +48,6 @@ export class ProductCardComponent {
   }
 
   /**
-   * Gets the manufacturer name text
-   */
-  async getManufacturer(): Promise<string> {
-    return (await this.manufacturer.innerText()).trim();
-  }
-
-  /**
    * Gets the regular price text
    */
   async getRegularPrice(): Promise<string> {
@@ -76,39 +62,11 @@ export class ProductCardComponent {
   }
 
   /**
-   * Checks if the product has a sale sticker (is on sale)
-   */
-  async isOnSale(): Promise<boolean> {
-    return await this.saleSticker.isVisible();
-  }
-
-  /**
    * Checks if the product is discounted (has campaign price and sale sticker)
    */
   async isDiscounted(): Promise<boolean> {
     const hasCampaignPrice = await this.campaignPrice.isVisible();
-    const hasSaleSticker = await this.isOnSale();
+    const hasSaleSticker = await this.saleSticker.isVisible();
     return hasCampaignPrice && hasSaleSticker;
-  }
-
-  /**
-   * Verifies the product card is visible
-   */
-  async verifyCardIsVisible() {
-    await expect(this.productCardLocator).toBeVisible();
-  }
-
-  /**
-   * Verifies the sale sticker is visible
-   */
-  async verifySaleStickerIsVisible() {
-    await expect(this.saleSticker).toBeVisible();
-  }
-
-  /**
-   * Gets the underlying locator for the product card
-   */
-  getLocator(): Locator {
-    return this.productCardLocator;
   }
 }

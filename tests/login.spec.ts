@@ -1,5 +1,4 @@
-import { test, expect } from '../src/fixtures/page.fixtures';
-import { LOGIN_PAGE_CONSTANTS } from '../src/constants/login.constants';
+import { test } from '../src/fixtures/page.fixtures';
 import usersData from '../src/data/users.json' with { type: 'json' };
 
 test.describe('Login with valid user', () => {
@@ -13,7 +12,6 @@ test.describe('Login with valid user', () => {
 
     await test.step('Show the successful login message', async () => {
       await loginPage.verifySuccessfulLoginMessage(user.firstName, user.lastName);
-      
     });
   });
 });

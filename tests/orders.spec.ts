@@ -2,15 +2,10 @@ import { authenticatedTest as test } from '../src/fixtures/authenticated-user.fi
 import { expect } from '../src/fixtures/page.fixtures';
 import { ProductHelper } from '../src/helpers/product.helper';
 
-test.describe('Order a product without discount', () => {
-  test.use({ userRole: 'standardUser_1' });
-  const expectedQuantity = 3;
-
-  test('Order one product without discount', async ({
-    homePage,
-    productPage,
-    checkoutPage,
-  }) => {
+test.describe('Order one product with different quantity', () => {
+  test('Order a product without discount', async ({ homePage, productPage, checkoutPage }) => {
+    test.use({ userRole: 'standardUser_1' });
+    const expectedQuantity = 3;
     let expectedTotal = 0;
     let productTitle: string;
 
@@ -26,7 +21,9 @@ test.describe('Order a product without discount', () => {
         0
       );
 
-      const itemPrice = await selectedProduct.getPrice();
+      const itemPrice = await ProductHelper.convertPriceToNumber(
+        await selectedProduct.getRegularPrice()
+      );
       expectedTotal = itemPrice * expectedQuantity;
       productTitle = await selectedProduct.getProductName();
       await selectedProduct.clickImage();
@@ -53,39 +50,45 @@ test.describe('Order a product without discount', () => {
       await checkoutPage.verifyOrderSuccess();
     });
   });
-});
 
-test.describe('Standard user 2', () => {
-  test.use({ userRole: 'standardUser_2' });
-
-  test('Order one product with discount', async ({ homePage, productPage, checkoutPage }) => {
+  test('Order a product with discount', async ({ homePage, productPage, checkoutPage }) => {
+    test.use({ userRole: 'standardUser_2' });
     const expectedQuantity = 2;
     let expectedTotal = 0;
+    let productTitle: string;
 
     await test.step('Prepare an empty cart', async () => {
       await checkoutPage.clearExistingCart();
       await homePage.openHomePage();
     });
 
-    await test.step('Select one product with discount', async () => {
+    await test.step('Select the product without discount', async () => {
       const selectedProduct = await ProductHelper.getProductByDiscountStatus(
-        homePage.campaignsSection.locator,
-        true
+        homePage.mostPopularSection.locator,
+        true,
+        0
       );
-      const itemPrice = await selectedProduct.getPrice();
+
+      const itemPrice = await ProductHelper.convertPriceToNumber(
+        await selectedProduct.getRegularPrice()
+      );
       expectedTotal = itemPrice * expectedQuantity;
+      productTitle = await selectedProduct.getProductName();
       await selectedProduct.clickImage();
 
+      await productPage.verifyProductTitle(productTitle);
       await expect(productPage.mainImage).toBeVisible();
-      await expect(productPage.productTitle).toBeVisible();
+      await expect(productPage.saleSticker).toHaveCount(0);
     });
 
-    await test.step('Add 2 units of the selected product to the cart', async () => {
+    await test.step('Add 3 units of the selected product to the cart', async () => {
       await productPage.addProducts(expectedQuantity);
-      await homePage.cart.verifyCartSummary(expectedQuantity);
+
+      await homePage.cart.verifyCartIsVisible();
+      await homePage.cart.verifyCartQuantity(expectedQuantity);
     });
 
-    await test.step('Go to the cart', async () => {
+    await test.step('Go to the checkout page', async () => {
       await checkoutPage.openCheckoutPage();
       await checkoutPage.verifyOrderSummary([expectedQuantity], expectedTotal);
     });

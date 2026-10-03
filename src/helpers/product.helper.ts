@@ -7,6 +7,22 @@ import { ProductCardComponent } from '../components/product-card.component';
  */
 export class ProductHelper {
   /**
+   * Converts a formatted product price (e.g., "$45") to a number.
+   * @param price Formatted product price
+   * @returns Numeric price
+   * @throws Error if the price does not contain a valid number
+   */
+  static convertPriceToNumber(price: string): number {
+    const normalizedPrice = price.replace(/[^0-9.-]/g, '');
+
+    if (!/^-?\d+(?:\.\d+)?$/.test(normalizedPrice)) {
+      throw new Error(`Invalid product price: "${price}".`);
+    }
+
+    return Number(normalizedPrice);
+  }
+
+  /**
    * Filters products within a section based on discount status.
    * @param sectionLocator Locator of the target section (e.g., homepage sections)
    * @param isDiscounted true - for discounted products, false - for non-discounted products
