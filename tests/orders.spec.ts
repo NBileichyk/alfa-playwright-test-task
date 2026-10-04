@@ -17,7 +17,7 @@ test.describe('Order a product without', () => {
 
     await test.step('Prepare an empty cart', async () => {
       await homePage.navigate('/checkout');
-      //await checkoutPage.clearExistingCart();
+      await checkoutPage.clearExistingCart();
       await checkoutPage.openCategoryPage();
     });
 
@@ -74,7 +74,7 @@ test.describe('Order with discount', () => {
 
     await test.step('Prepare an empty cart', async () => {
       await homePage.navigate('/checkout');
-      //await checkoutPage.clearExistingCart();
+      await checkoutPage.clearExistingCart();
       await checkoutPage.openCategoryPage();
     });
 

@@ -27,7 +27,7 @@ export class CheckoutPage extends BasePage {
     this.orderSummaryTable = page.locator('#order_confirmation-wrapper table.dataTable');
     this.commentSection = page.locator('textarea[name="comments"]');
     this.confirmOrderButton = page.locator('button[name="confirm_order"][value="Confirm Order"]');
-    this.removeCartItemButtons = page.getByRole('button', { name: 'remove_cart_item' });
+    this.removeCartItemButtons = page.getByRole('button', { name: 'Remove', exact: true });
   }
 
   async verifyOrderSummary(expectedQuantities: number[], expectedTotal: number) {
@@ -58,8 +58,7 @@ export class CheckoutPage extends BasePage {
   }
 
   async clearExistingCart() {
-    if (await this.cart.hasItems()) {
-      await this.cart.clickCheckoutLink();
+    if ((await this.removeCartItemButtons.count()) > 0) {
       await this.clearCart();
     }
   }

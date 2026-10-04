@@ -39,7 +39,9 @@ export class CartComponent {
 
   async hasItems(): Promise<boolean> {
     const quantityText = await this.quantity.textContent();
-    return Number(quantityText ?? 0) > 0;
+    const matches = (quantityText ?? '').match(/\d+/);
+    const quantity = matches ? parseInt(matches[0], 10) : 0;
+    return quantity > 0;
   }
 
   async getTotal(): Promise<number> {
