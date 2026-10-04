@@ -2,7 +2,7 @@ import { authenticatedTest as test } from '../src/fixtures/authenticated-user.fi
 import { expect } from '../src/fixtures/page.fixtures';
 import { ProductHelper } from '../src/helpers/product.helper';
 
-test.describe('Order a product without', () => {
+test.describe('Order a product without discount', () => {
   test.use({ userRole: 'standardUser_1' });
 
   test('Order a product without discount and change the quantity', async ({
@@ -47,7 +47,7 @@ test.describe('Order a product without', () => {
       await homePage.cart.verifyCartQuantity(expectedQuantity);
     });
 
-    await test.step('Go to the checkout page', async () => {
+    await test.step('Go to the checkout page and verify the order data', async () => {
       await checkoutPage.openCheckoutPage();
       await checkoutPage.verifyOrderSummary([expectedQuantity], expectedTotal);
     });
@@ -59,7 +59,7 @@ test.describe('Order a product without', () => {
   });
 });
 
-test.describe('Order with discount', () => {
+test.describe('Order a product with discount', () => {
   test.use({ userRole: 'standardUser_2' });
 
   test('Order a product with discount and change the quantity', async ({
@@ -104,7 +104,7 @@ test.describe('Order with discount', () => {
       await homePage.cart.verifyCartQuantity(expectedQuantity);
     });
 
-    await test.step('Go to the checkout page', async () => {
+    await test.step('Go to the checkout page and verify the order data', async () => {
       await checkoutPage.openCheckoutPage();
       await checkoutPage.verifyOrderSummary([expectedQuantity], expectedTotal);
     });

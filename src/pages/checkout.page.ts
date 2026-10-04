@@ -8,6 +8,9 @@ export class CheckoutPage extends BasePage {
   confirmOrderButton: Locator;
   orderSuccessMessage: Locator;
   billingAddressSection: Locator;
+  firstNameInput: Locator;
+  lastNameInput: Locator;
+  emailInput: Locator;
   shippingAddressSection: Locator;
   shippingAddressCheckBox: Locator;
   orderSummaryTable: Locator;
@@ -22,6 +25,9 @@ export class CheckoutPage extends BasePage {
       name: CHECKOUT_PAGE_CONSTANTS.orderSuccessMessage,
     });
     this.billingAddressSection = page.locator('.billing-address');
+    this.firstNameInput = this.billingAddressSection.locator('input[name="firstname"]');
+    this.lastNameInput = this.billingAddressSection.locator('input[name="lastname"]');
+    this.emailInput = this.billingAddressSection.locator('input[name="email"]');
     this.shippingAddressSection = page.locator('.shipping-address');
     this.shippingAddressCheckBox = page.locator('input[name="different_shipping_address"]');
     this.orderSummaryTable = page.locator('#order_confirmation-wrapper table.dataTable');

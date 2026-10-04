@@ -1,4 +1,4 @@
-import { test } from '../src/fixtures/page.fixtures';
+import { test, expect } from '../src/fixtures/page.fixtures';
 
 test.describe('Guest order flow', () => {
   test('Order products without login', async ({
@@ -32,6 +32,12 @@ test.describe('Guest order flow', () => {
 
       await checkoutPage.openCheckoutPage();
       await checkoutPage.verifyOrderSummary([1, 1], expectedTotal);
+    });
+
+    await test.step("Check that the customer's data is empty", async () => {
+      await expect(checkoutPage.firstNameInput).toBeEmpty();
+      await expect(checkoutPage.lastNameInput).toBeEmpty();
+      await expect(checkoutPage.emailInput).toBeEmpty();
     });
 
     await test.step('Return to the home page and verify Recently Viewed products', async () => {
