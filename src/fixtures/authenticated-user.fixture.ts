@@ -26,7 +26,7 @@ export const authenticatedTest = base.extend<AuthenticatedUserFixtures>({
       try {
         await use();
       } finally {
-        await categoryPage.openCategory();
+        await categoryPage.openCategoryPage();
         await loginPage.logout();
       }
     },

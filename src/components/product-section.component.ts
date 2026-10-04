@@ -3,10 +3,13 @@ import { ProductCardComponent } from './product-card.component';
 import { ProductHelper } from '../helpers/product.helper';
 
 export class ProductSectionComponent {
-  constructor(
-    readonly locator: Locator,
-    readonly sectionName: string
-  ) {}
+  locator: Locator;
+  sectionName: string;
+
+  constructor(locator: Locator, sectionName: string) {
+    this.locator = locator;
+    this.sectionName = sectionName;
+  }
 
   static byName(page: Page, sectionName: string): ProductSectionComponent {
     const title = page.getByRole('heading', { name: sectionName, exact: true });

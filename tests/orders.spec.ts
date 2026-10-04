@@ -2,27 +2,34 @@ import { authenticatedTest as test } from '../src/fixtures/authenticated-user.fi
 import { expect } from '../src/fixtures/page.fixtures';
 import { ProductHelper } from '../src/helpers/product.helper';
 
-test.describe('Order one product with different quantity', () => {
-  test('Order a product without discount', async ({ homePage, productPage, checkoutPage }) => {
-    test.use({ userRole: 'standardUser_1' });
+test.describe('Order a product without', () => {
+  test.use({ userRole: 'standardUser_1' });
+
+  test('Order a product without discount and change the quantity', async ({
+    homePage,
+    categoryPage,
+    checkoutPage,
+    productPage,
+  }) => {
     const expectedQuantity = 3;
     let expectedTotal = 0;
     let productTitle: string;
 
     await test.step('Prepare an empty cart', async () => {
-      await checkoutPage.clearExistingCart();
-      await homePage.openHomePage();
+      await homePage.navigate('/checkout');
+      //await checkoutPage.clearExistingCart();
+      await checkoutPage.openCategoryPage();
     });
 
     await test.step('Select the product without discount', async () => {
       const selectedProduct = await ProductHelper.getProductByDiscountStatus(
-        homePage.mostPopularSection.locator,
+        categoryPage.products.locator,
         false,
-        0
+        1
       );
 
       const itemPrice = await ProductHelper.convertPriceToNumber(
-        await selectedProduct.getRegularPrice()
+        await selectedProduct.getPriceText('price')
       );
       expectedTotal = itemPrice * expectedQuantity;
       productTitle = await selectedProduct.getProductName();
@@ -33,7 +40,7 @@ test.describe('Order one product with different quantity', () => {
       await expect(productPage.saleSticker).toHaveCount(0);
     });
 
-    await test.step('Add 3 units of the selected product to the cart', async () => {
+    await test.step(`Add ${expectedQuantity} units of the selected product to the cart`, async () => {
       await productPage.addProducts(expectedQuantity);
 
       await homePage.cart.verifyCartIsVisible();
@@ -50,27 +57,36 @@ test.describe('Order one product with different quantity', () => {
       await checkoutPage.verifyOrderSuccess();
     });
   });
+});
 
-  test('Order a product with discount', async ({ homePage, productPage, checkoutPage }) => {
-    test.use({ userRole: 'standardUser_2' });
+test.describe('Order with discount', () => {
+  test.use({ userRole: 'standardUser_2' });
+
+  test('Order a product with discount and change the quantity', async ({
+    homePage,
+    productPage,
+    categoryPage,
+    checkoutPage,
+  }) => {
     const expectedQuantity = 2;
     let expectedTotal = 0;
     let productTitle: string;
 
     await test.step('Prepare an empty cart', async () => {
-      await checkoutPage.clearExistingCart();
-      await homePage.openHomePage();
+      await homePage.navigate('/checkout');
+      //await checkoutPage.clearExistingCart();
+      await checkoutPage.openCategoryPage();
     });
 
-    await test.step('Select the product without discount', async () => {
+    await test.step('Select the product with discount', async () => {
       const selectedProduct = await ProductHelper.getProductByDiscountStatus(
-        homePage.mostPopularSection.locator,
+        categoryPage.products.locator,
         true,
         0
       );
 
       const itemPrice = await ProductHelper.convertPriceToNumber(
-        await selectedProduct.getRegularPrice()
+        await selectedProduct.getPriceText('campaign')
       );
       expectedTotal = itemPrice * expectedQuantity;
       productTitle = await selectedProduct.getProductName();
@@ -78,10 +94,10 @@ test.describe('Order one product with different quantity', () => {
 
       await productPage.verifyProductTitle(productTitle);
       await expect(productPage.mainImage).toBeVisible();
-      await expect(productPage.saleSticker).toHaveCount(0);
+      await expect(productPage.saleSticker).toHaveCount(1);
     });
 
-    await test.step('Add 3 units of the selected product to the cart', async () => {
+    await test.step(`Add ${expectedQuantity} units of the selected product to the cart`, async () => {
       await productPage.addProducts(expectedQuantity);
 
       await homePage.cart.verifyCartIsVisible();

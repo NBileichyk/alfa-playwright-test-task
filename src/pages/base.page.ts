@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test';
 import { CartComponent } from '../components/cart.component';
 import { SiteMenuComponent } from '../components/site-menu.component';
+import { COMMON_CONSTANTS } from '../constants/common.constants';
 
 export class BasePage {
   protected page: Page;
@@ -19,6 +20,12 @@ export class BasePage {
 
   async openHomePage(): Promise<void> {
     await this.siteMenu.openHomePage();
+    await expect(this.page).toHaveURL('en/');
+  }
+
+  async openCategoryPage(): Promise<void> {
+    await this.siteMenu.clickCategoryLink();
+    await expect(this.page).toHaveTitle(`${COMMON_CONSTANTS.categoryName} | My Store`);
   }
 
   async openCheckoutPage(): Promise<void> {

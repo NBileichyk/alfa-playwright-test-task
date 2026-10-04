@@ -5,13 +5,14 @@ import { Locator } from '@playwright/test';
  * Encapsulates all product card elements and their interactions.
  */
 export class ProductCardComponent {
-  readonly searchIcon: Locator;
-  readonly imageWrapper: Locator;
-  readonly name: Locator;
-  readonly manufacturer: Locator;
-  readonly regularPrice: Locator;
-  readonly campaignPrice: Locator;
-  readonly saleSticker: Locator;
+  searchIcon: Locator;
+  imageWrapper: Locator;
+  name: Locator;
+  manufacturer: Locator;
+  regularPrice: Locator;
+  campaignPrice: Locator;
+  price: Locator;
+  saleSticker: Locator;
 
   constructor(private productCardLocator: Locator) {
     this.searchIcon = productCardLocator.locator('.fa-search');
@@ -20,6 +21,7 @@ export class ProductCardComponent {
     this.manufacturer = productCardLocator.locator('.manufacturer');
     this.regularPrice = productCardLocator.locator('.regular-price');
     this.campaignPrice = productCardLocator.locator('.campaign-price');
+    this.price = productCardLocator.locator('.price');
     this.saleSticker = productCardLocator.locator('.sticker.sale[title="On Sale"]');
   }
 
@@ -48,25 +50,35 @@ export class ProductCardComponent {
   }
 
   /**
-   * Gets the regular price text
-   */
-  async getRegularPrice(): Promise<string> {
-    return (await this.regularPrice.innerText()).trim();
-  }
-
-  /**
-   * Gets the campaign price text
-   */
-  async getCampaignPrice(): Promise<string> {
-    return (await this.campaignPrice.innerText()).trim();
-  }
-
-  /**
    * Checks if the product is discounted (has campaign price and sale sticker)
    */
   async isDiscounted(): Promise<boolean> {
     const hasCampaignPrice = await this.campaignPrice.isVisible();
     const hasSaleSticker = await this.saleSticker.isVisible();
     return hasCampaignPrice && hasSaleSticker;
+  }
+
+  /**
+   * Gets the price text based on the specified price type
+   * @param type 'regular' | 'campaign' | 'price'
+   */
+  async getPriceText(type: 'regular' | 'campaign' | 'price' = 'price'): Promise<string> {
+    let targetLocator: Locator;
+
+    switch (type) {
+      case 'regular':
+        targetLocator = this.regularPrice;
+        break;
+      case 'campaign':
+        targetLocator = this.campaignPrice;
+        break;
+      case 'price':
+      default:
+        targetLocator = this.price;
+        break;
+    }
+
+    const priceText = await targetLocator.innerText();
+    return priceText.trim();
   }
 }

@@ -4,17 +4,17 @@ import { BasePage } from './base.page';
 import { ProductSectionComponent } from '../components/product-section.component';
 
 export class HomePage extends BasePage {
-  readonly sliderWrapper: Locator;
-  readonly boxLogotypes: Locator;
-  readonly mostPopularSection: ProductSectionComponent;
-  readonly mostPopularTitle: Locator;
-  readonly campaignsSection: ProductSectionComponent;
-  readonly campaignsTitle: Locator;
-  readonly latestProductsSection: ProductSectionComponent;
-  readonly latestProductsTitle: Locator;
-  readonly recentlyViewedProductsBox: Locator;
-  readonly recentlyViewedProducts: Locator;
-  readonly recentlyViewedTitle: Locator;
+  sliderWrapper: Locator;
+  boxLogotypes: Locator;
+  mostPopularSection: ProductSectionComponent;
+  mostPopularTitle: Locator;
+  campaignsSection: ProductSectionComponent;
+  campaignsTitle: Locator;
+  latestProductsSection: ProductSectionComponent;
+  latestProductsTitle: Locator;
+  recentlyViewedProductsBox: Locator;
+  recentlyViewedProducts: Locator;
+  recentlyViewedTitle: Locator;
 
   constructor(page: Page) {
     super(page);

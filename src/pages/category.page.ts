@@ -1,6 +1,5 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { ProductSectionComponent } from '../components/product-section.component';
-import { COMMON_CONSTANTS } from '../constants/common.constants';
 import { BasePage } from './base.page';
 
 export type SelectedProduct = {
@@ -9,11 +8,11 @@ export type SelectedProduct = {
 };
 
 export class CategoryPage extends BasePage {
-  readonly categoryTitle: Locator;
-  readonly filters: Locator;
-  readonly categoriesListing: Locator;
-  readonly productsListing: Locator;
-  readonly products: ProductSectionComponent;
+  categoryTitle: Locator;
+  filters: Locator;
+  categoriesListing: Locator;
+  productsListing: Locator;
+  products: ProductSectionComponent;
 
   constructor(page: Page) {
     super(page);
@@ -23,11 +22,6 @@ export class CategoryPage extends BasePage {
     this.categoriesListing = page.locator('.listing-wrapper.categories');
     this.productsListing = page.locator('.listing-wrapper.products');
     this.products = new ProductSectionComponent(this.productsListing, 'Category products');
-  }
-
-  async openCategory(): Promise<void> {
-    await this.siteMenu.clickCategoryLink();
-    await expect(this.categoryTitle).toHaveText(COMMON_CONSTANTS.categoryName);
   }
 
   getCurrentUrl(): string {

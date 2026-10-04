@@ -3,11 +3,11 @@ import { LOGIN_PAGE_CONSTANTS } from '../constants/login.constants';
 import { BasePage } from './base.page';
 
 export class LoginPage extends BasePage {
-  private readonly emailInput: Locator;
-  private readonly passwordInput: Locator;
-  private readonly loginButton: Locator;
-  readonly invalidLoginErrorMessage: Locator;
-  readonly successfulLoginMessage: Locator;
+  emailInput: Locator;
+  passwordInput: Locator;
+  loginButton: Locator;
+  invalidLoginErrorMessage: Locator;
+  successfulLoginMessage: Locator;
 
   constructor(page: Page) {
     super(page);

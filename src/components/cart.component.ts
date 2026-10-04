@@ -2,14 +2,13 @@ import { Page, Locator, expect } from '@playwright/test';
 import { COMMON_CONSTANTS } from '../constants/common.constants';
 
 export class CartComponent {
-  private readonly cartWrapper: Locator;
-
-  readonly image: Locator;
-  readonly content: Locator;
-  readonly cartText: Locator;
-  readonly quantity: Locator;
-  readonly formattedValue: Locator;
-  readonly checkoutLink: Locator;
+  cartWrapper: Locator;
+  image: Locator;
+  content: Locator;
+  cartText: Locator;
+  quantity: Locator;
+  formattedValue: Locator;
+  checkoutLink: Locator;
 
   constructor(page: Page) {
     this.cartWrapper = page.locator('#cart-wrapper > #cart');

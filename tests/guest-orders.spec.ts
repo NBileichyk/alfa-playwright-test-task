@@ -12,19 +12,18 @@ test.describe('Guest order flow', () => {
     let secondProduct = { name: '', url: '' };
 
     await test.step('Open the category page and add the first product and add it to the cart', async () => {
-      await categoryPage.openCategory();
+      await homePage.navigate('/rubber-ducks-c-1/');
+      await categoryPage.openCategoryPage();
       firstProduct = await categoryPage.openProductByIndex(0);
       await productPage.verifyProductTitle(firstProduct.name);
       await productPage.addProductToCart();
-      //!!! ASSERT
     });
 
     await test.step('Open the category page and add the second product to the cart', async () => {
-      await categoryPage.openCategory();
+      await categoryPage.openCategoryPage();
       secondProduct = await categoryPage.openProductByIndex(1);
       await productPage.verifyProductTitle(secondProduct.name);
       await productPage.addProductToCart();
-      //!!! ASSERT
     });
 
     await test.step('Verify that both products are in the order summary', async () => {

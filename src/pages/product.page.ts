@@ -3,12 +3,11 @@ import { PRODUCT_PAGE_CONSTANTS } from '../constants/product.constants';
 import { BasePage } from './base.page';
 
 export class ProductPage extends BasePage {
-  readonly productTitle: Locator;
-  readonly mainImage: Locator;
-  readonly saleSticker: Locator;
-  readonly addToCartButton: Locator;
-  private readonly quantityInput: Locator;
-  private readonly optionSelects: Locator;
+  productTitle: Locator;
+  mainImage: Locator;
+  saleSticker: Locator;
+  addToCartButton: Locator;
+  quantityInput: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -20,7 +19,6 @@ export class ProductPage extends BasePage {
       name: PRODUCT_PAGE_CONSTANTS.addToCartButton,
     });
     this.quantityInput = page.locator('#box-product input[name="quantity"]');
-    this.optionSelects = page.locator('#box-product select');
   }
 
   async verifyProductTitle(expectedTitle: string): Promise<void> {
@@ -44,11 +42,13 @@ export class ProductPage extends BasePage {
     await this.addProducts(1);
   }
 
+  // Метод инкапсулирует логику выбора опций, а селектор опций объявлен прямо здесь внутри
   private async selectAvailableOptions() {
-    const selectCount = await this.optionSelects.count();
+    const optionSelects = this.page.locator('#box-product select');
+    const selectCount = await optionSelects.count();
 
     for (let index = 0; index < selectCount; index++) {
-      const select = this.optionSelects.nth(index);
+      const select = optionSelects.nth(index);
       const availableOptions = select.locator('option:not([disabled])');
       const optionCount = await availableOptions.count();
 
