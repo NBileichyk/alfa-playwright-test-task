@@ -3,38 +3,26 @@ import { PRODUCT_PAGE_CONSTANTS } from '../constants/product.constants';
 import { BasePage } from './base.page';
 
 export class ProductPage extends BasePage {
-  readonly breadcrumbs: Locator;
-  readonly productTitle: Locator;
-  readonly mainImage: Locator;
-  readonly saleSticker: Locator;
-  readonly informationBlock: Locator;
-  readonly tabsBlock: Locator;
-  readonly alsoPurchasedProductsBox: Locator;
-  readonly similarProductsBox: Locator;
-  readonly addToCartButton: Locator;
-  private readonly quantityInput: Locator;
-  private readonly optionSelects: Locator;
+  productTitle: Locator;
+  mainImage: Locator;
+  saleSticker: Locator;
+  addToCartButton: Locator;
+  quantityInput: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.breadcrumbs = page.locator('#breadcrumbs');
     this.productTitle = page.locator('#box-product .title');
     this.mainImage = page.locator('.main-image');
     this.saleSticker = page.locator('#box-product .sticker.sale[title="On Sale"]');
-    this.informationBlock = page.locator('.information');
-    this.tabsBlock = page.locator('.tabs');
-    this.alsoPurchasedProductsBox = page.locator('#box-also-purchased-products');
-    this.similarProductsBox = page.locator('#box-similar-products');
     this.addToCartButton = page.getByRole('button', {
       name: PRODUCT_PAGE_CONSTANTS.addToCartButton,
     });
     this.quantityInput = page.locator('#box-product input[name="quantity"]');
-    this.optionSelects = page.locator('#box-product select');
   }
 
-  async addProductToCart() {
-    await this.addProducts(1);
+  async verifyProductTitle(expectedTitle: string): Promise<void> {
+    await expect(this.productTitle).toHaveText(expectedTitle);
   }
 
   async addProducts(count: number) {
@@ -50,11 +38,17 @@ export class ProductPage extends BasePage {
     await expect(this.cart.quantity).toHaveText(String(quantityBeforeAdd + count));
   }
 
+  async addProductToCart() {
+    await this.addProducts(1);
+  }
+
+  // Метод инкапсулирует логику выбора опций, а селектор опций объявлен прямо здесь внутри
   private async selectAvailableOptions() {
-    const selectCount = await this.optionSelects.count();
+    const optionSelects = this.page.locator('#box-product select');
+    const selectCount = await optionSelects.count();
 
     for (let index = 0; index < selectCount; index++) {
-      const select = this.optionSelects.nth(index);
+      const select = optionSelects.nth(index);
       const availableOptions = select.locator('option:not([disabled])');
       const optionCount = await availableOptions.count();
 
@@ -75,16 +69,5 @@ export class ProductPage extends BasePage {
         break;
       }
     }
-  }
-
-  // ???????? seems not needed
-  async verifyProductPageIsLoaded() {
-    await expect(this.productTitle).toBeVisible();
-    await expect(this.mainImage).toBeVisible();
-    await expect(this.informationBlock).toBeVisible();
-  }
-
-  async verifySaleStickerIsVisible() {
-    await expect(this.saleSticker).toBeVisible();
   }
 }

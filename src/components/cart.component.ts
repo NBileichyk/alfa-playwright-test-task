@@ -2,14 +2,13 @@ import { Page, Locator, expect } from '@playwright/test';
 import { COMMON_CONSTANTS } from '../constants/common.constants';
 
 export class CartComponent {
-  private readonly cartWrapper: Locator;
-
-  readonly image: Locator;
-  readonly content: Locator;
-  readonly cartText: Locator;
-  readonly quantity: Locator;
-  readonly formattedValue: Locator;
-  readonly checkoutLink: Locator;
+  cartWrapper: Locator;
+  image: Locator;
+  content: Locator;
+  cartText: Locator;
+  quantity: Locator;
+  formattedValue: Locator;
+  checkoutLink: Locator;
 
   constructor(page: Page) {
     this.cartWrapper = page.locator('#cart-wrapper > #cart');
@@ -40,7 +39,21 @@ export class CartComponent {
 
   async hasItems(): Promise<boolean> {
     const quantityText = await this.quantity.textContent();
-    return Number(quantityText ?? 0) > 0;
+    const matches = (quantityText ?? '').match(/\d+/);
+    const quantity = matches ? parseInt(matches[0], 10) : 0;
+    return quantity > 0;
+  }
+
+  async getTotal(): Promise<number> {
+    const formattedTotal = await this.formattedValue.innerText();
+    const amount = formattedTotal.replace(/[^0-9.-]/g, '');
+    const total = Number(amount);
+
+    if (amount === '' || !Number.isFinite(total)) {
+      throw new Error(`Unable to read the cart total from "${formattedTotal}".`);
+    }
+
+    return total;
   }
 
   async verifyCartSummary(expectedQuantity: number, expectedTotal?: number) {
