@@ -12,7 +12,7 @@ export class CheckoutPage extends BasePage {
   lastNameInput: Locator;
   emailInput: Locator;
   shippingAddressSection: Locator;
-  shippingAddressCheckBox: Locator;
+  shippingAddressCheckbox: Locator;
   orderSummaryTable: Locator;
   commentSection: Locator;
   removeCartItemButtons: Locator;
@@ -29,15 +29,25 @@ export class CheckoutPage extends BasePage {
     this.lastNameInput = this.billingAddressSection.locator('input[name="lastname"]');
     this.emailInput = this.billingAddressSection.locator('input[name="email"]');
     this.shippingAddressSection = page.locator('.shipping-address');
-    this.shippingAddressCheckBox = page.locator('input[name="different_shipping_address"]');
-    this.orderSummaryTable = page.locator('#order_confirmation-wrapper table.dataTable');
+    this.shippingAddressCheckbox = page.locator('input[name="different_shipping_address"]');
+    this.orderSummaryTable = page.locator(
+      'xpath=//*[@id="order_confirmation-wrapper"]//table[contains(concat(" ", normalize-space(@class), " "), " dataTable ")]'
+    );
     this.commentSection = page.locator('textarea[name="comments"]');
     this.confirmOrderButton = page.locator('button[name="confirm_order"][value="Confirm Order"]');
     this.removeCartItemButtons = page.getByRole('button', { name: 'Remove', exact: true });
   }
 
-  async verifyOrderSummary(expectedQuantities: number[], expectedTotal: number) {
+  async verifyOrderSummary(
+    expectedQuantities: number[],
+    expectedTotal: number,
+    expectedProductNames: string[]
+  ) {
     await expect(this.orderSummaryTable).toBeVisible();
+
+    for (const productName of expectedProductNames) {
+      await expect(this.orderSummaryTable).toContainText(productName);
+    }
 
     const quantityCounts = new Map<number, number>();
     for (const quantity of expectedQuantities) {
@@ -59,8 +69,6 @@ export class CheckoutPage extends BasePage {
       await this.removeCartItemButtons.first().click();
       await expect(this.removeCartItemButtons).toHaveCount(previousCount - 1);
     }
-
-    //await expect(this.emptyCartMessage).toBeVisible();
   }
 
   async clearExistingCart() {

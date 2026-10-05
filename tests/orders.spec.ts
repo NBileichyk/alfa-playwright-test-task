@@ -2,116 +2,82 @@ import { authenticatedTest as test } from '../src/fixtures/authenticated-user.fi
 import { expect } from '../src/fixtures/page.fixtures';
 import { ProductHelper } from '../src/helpers/product.helper';
 
-test.describe('Order a product without discount', () => {
-  test.use({ userRole: 'standardUser_1' });
+const orderScenarios = [
+  {
+    title: 'Order a product without discount',
+    userRole: 'standardUser_1' as const,
+    isDiscounted: false,
+    productIndex: 1,
+    expectedQuantity: 3,
+    priceType: 'price' as const,
+    expectedStickerCount: 0,
+  },
+  {
+    title: 'Order a product with discount',
+    userRole: 'standardUser_2' as const,
+    isDiscounted: true,
+    productIndex: 0,
+    expectedQuantity: 2,
+    priceType: 'campaign' as const,
+    expectedStickerCount: 1,
+  },
+];
 
-  test('Order a product without discount and change the quantity', async ({
-    homePage,
-    categoryPage,
-    checkoutPage,
-    productPage,
-  }) => {
-    const expectedQuantity = 3;
-    let expectedTotal = 0;
-    let productTitle: string;
+for (const scenario of orderScenarios) {
+  test.describe(scenario.title, () => {
+    test.use({ userRole: scenario.userRole });
 
-    await test.step('Prepare an empty cart', async () => {
-      await homePage.navigate('/checkout');
-      await checkoutPage.clearExistingCart();
-      await checkoutPage.openCategoryPage();
-    });
+    test(`Complete order ${scenario.isDiscounted ? 'with' : 'without'} discount`, async ({
+      homePage,
+      categoryPage,
+      checkoutPage,
+      productPage,
+    }) => {
+      const { isDiscounted, productIndex, expectedQuantity, priceType, expectedStickerCount } =
+        scenario;
+      let expectedTotal = 0;
+      let productName = '';
 
-    await test.step('Select the product without discount', async () => {
-      const selectedProduct = await ProductHelper.getProductByDiscountStatus(
-        categoryPage.products.locator,
-        false,
-        1
-      );
+      await test.step('Clear the cart', async () => {
+        await homePage.navigate('/checkout');
+        await checkoutPage.clearExistingCart();
+        await checkoutPage.openCategoryPage();
+      });
 
-      const itemPrice = await ProductHelper.convertPriceToNumber(
-        await selectedProduct.getPriceText('price')
-      );
-      expectedTotal = itemPrice * expectedQuantity;
-      productTitle = await selectedProduct.getProductName();
-      await selectedProduct.clickImage();
+      await test.step(`Select a ${isDiscounted ? 'discounted' : 'non-discounted'} product`, async () => {
+        const selectedProduct = await ProductHelper.getProductByDiscountStatus(
+          categoryPage.products.locator,
+          isDiscounted,
+          productIndex
+        );
+        const itemPrice = await ProductHelper.convertPriceToNumber(
+          await selectedProduct.getPriceText(priceType)
+        );
 
-      await productPage.verifyProductTitle(productTitle);
-      await expect(productPage.mainImage).toBeVisible();
-      await expect(productPage.saleSticker).toHaveCount(0);
-    });
+        expectedTotal = itemPrice * expectedQuantity;
+        productName = await selectedProduct.getProductName();
+        await selectedProduct.clickImage();
 
-    await test.step(`Add ${expectedQuantity} units of the selected product to the cart`, async () => {
-      await productPage.addProducts(expectedQuantity);
+        await productPage.verifyProductTitle(productName);
+        await expect(productPage.mainImage).toBeVisible();
+        await expect(productPage.saleSticker).toHaveCount(expectedStickerCount);
+      });
 
-      await homePage.cart.verifyCartIsVisible();
-      await homePage.cart.verifyCartQuantity(expectedQuantity);
-    });
+      await test.step(`Add ${expectedQuantity} items to the cart`, async () => {
+        await productPage.addProducts(expectedQuantity);
+        await homePage.cart.verifyCartIsVisible();
+        await homePage.cart.verifyCartQuantity(expectedQuantity);
+      });
 
-    await test.step('Go to the checkout page and verify the order data', async () => {
-      await checkoutPage.openCheckoutPage();
-      await checkoutPage.verifyOrderSummary([expectedQuantity], expectedTotal);
-    });
+      await test.step('Verify the checkout summary', async () => {
+        await checkoutPage.openCheckoutPage();
+        await checkoutPage.verifyOrderSummary([expectedQuantity], expectedTotal, [productName]);
+      });
 
-    await test.step('Confirm the order', async () => {
-      await checkoutPage.clickConfirmOrder();
-      await checkoutPage.verifyOrderSuccess();
-    });
-  });
-});
-
-test.describe('Order a product with discount', () => {
-  test.use({ userRole: 'standardUser_2' });
-
-  test('Order a product with discount and change the quantity', async ({
-    homePage,
-    productPage,
-    categoryPage,
-    checkoutPage,
-  }) => {
-    const expectedQuantity = 2;
-    let expectedTotal = 0;
-    let productTitle: string;
-
-    await test.step('Prepare an empty cart', async () => {
-      await homePage.navigate('/checkout');
-      await checkoutPage.clearExistingCart();
-      await checkoutPage.openCategoryPage();
-    });
-
-    await test.step('Select the product with discount', async () => {
-      const selectedProduct = await ProductHelper.getProductByDiscountStatus(
-        categoryPage.products.locator,
-        true,
-        0
-      );
-
-      const itemPrice = await ProductHelper.convertPriceToNumber(
-        await selectedProduct.getPriceText('campaign')
-      );
-      expectedTotal = itemPrice * expectedQuantity;
-      productTitle = await selectedProduct.getProductName();
-      await selectedProduct.clickImage();
-
-      await productPage.verifyProductTitle(productTitle);
-      await expect(productPage.mainImage).toBeVisible();
-      await expect(productPage.saleSticker).toHaveCount(1);
-    });
-
-    await test.step(`Add ${expectedQuantity} units of the selected product to the cart`, async () => {
-      await productPage.addProducts(expectedQuantity);
-
-      await homePage.cart.verifyCartIsVisible();
-      await homePage.cart.verifyCartQuantity(expectedQuantity);
-    });
-
-    await test.step('Go to the checkout page and verify the order data', async () => {
-      await checkoutPage.openCheckoutPage();
-      await checkoutPage.verifyOrderSummary([expectedQuantity], expectedTotal);
-    });
-
-    await test.step('Confirm the order', async () => {
-      await checkoutPage.clickConfirmOrder();
-      await checkoutPage.verifyOrderSuccess();
+      await test.step('Place the order', async () => {
+        await checkoutPage.clickConfirmOrder();
+        await checkoutPage.verifyOrderSuccess();
+      });
     });
   });
-});
+}

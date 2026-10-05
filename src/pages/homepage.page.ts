@@ -5,7 +5,7 @@ import { ProductSectionComponent } from '../components/product-section.component
 
 export class HomePage extends BasePage {
   sliderWrapper: Locator;
-  boxLogotypes: Locator;
+  logoSection: Locator;
   mostPopularSection: ProductSectionComponent;
   mostPopularTitle: Locator;
   campaignsSection: ProductSectionComponent;
@@ -20,7 +20,7 @@ export class HomePage extends BasePage {
     super(page);
 
     this.sliderWrapper = page.locator('#slider-wrapper');
-    this.boxLogotypes = page.locator('#box-logotypes');
+    this.logoSection = page.locator('#box-logotypes');
 
     this.mostPopularSection = ProductSectionComponent.byName(
       page,
@@ -58,13 +58,11 @@ export class HomePage extends BasePage {
     await expect(this.recentlyViewedProducts).toHaveCount(productUrls.length);
 
     for (const [index, productUrl] of productUrls.entries()) {
-      // Extract the last segment of the URL (e.g. "purple-duck-p-5")
       const productSlug = productUrl.split('/').pop() || '';
 
       const linkElement = this.recentlyViewedProducts.nth(index).locator('a');
       const href = await linkElement.getAttribute('href');
 
-      // Verify that the href ends with the product slug
       expect(href).toContain(productSlug);
     }
   }

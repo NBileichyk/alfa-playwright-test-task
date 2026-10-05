@@ -1,8 +1,5 @@
 import { test as base } from './page.fixtures';
-import usersData from '../data/users.json' with { type: 'json' };
-
-type UserRole = Exclude<keyof typeof usersData, 'invalidUser'>;
-type UserData = (typeof usersData)[UserRole];
+import { getUser, type UserData, type UserRole } from '../data/users';
 
 type AuthenticatedUserFixtures = {
   loggedInUser: void;
@@ -14,7 +11,7 @@ export const authenticatedTest = base.extend<AuthenticatedUserFixtures>({
   userRole: ['standardUser_1', { option: true }],
 
   currentUser: async ({ userRole }, use) => {
-    await use(usersData[userRole]);
+    await use(getUser(userRole));
   },
 
   loggedInUser: [

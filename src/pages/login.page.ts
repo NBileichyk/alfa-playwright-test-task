@@ -18,14 +18,10 @@ export class LoginPage extends BasePage {
     this.successfulLoginMessage = page.locator('.notice.success');
   }
 
-  async login(email: string, pass: string) {
+  async login(email: string, password: string) {
     await this.emailInput.fill(email);
-    await this.passwordInput.fill(pass);
+    await this.passwordInput.fill(password);
     await this.loginButton.click();
-  }
-
-  async loginWithCredentials(email: string, pass: string) {
-    await this.login(email, pass);
   }
 
   async logout() {
@@ -45,11 +41,16 @@ export class LoginPage extends BasePage {
     await expect(logoutLink).toHaveCount(0);
   }
 
-  async verifySuccessfulLoginMessage(firstName: string, lastName: string) {
+  async verifySuccessfulLoginMessage(firstName?: string, lastName?: string) {
     await expect(this.successfulLoginMessage).toBeVisible();
     await expect(this.successfulLoginMessage).toContainText(
-      `${LOGIN_PAGE_CONSTANTS.successfulLoginMessagePrefix} ${firstName} ${lastName}`
+      LOGIN_PAGE_CONSTANTS.successfulLoginMessagePrefix
     );
+
+    if (firstName && lastName) {
+      await expect(this.successfulLoginMessage).toContainText(`${firstName} ${lastName}`);
+    }
+
     await expect(this.successfulLoginMessage).toHaveCSS(
       'background-color',
       LOGIN_PAGE_CONSTANTS.successBackgroundColor

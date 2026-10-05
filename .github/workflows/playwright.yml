@@ -1,26 +1,12 @@
-name: Playwright Tests with Allure
+name: Playwright E2E Tests
 
 on:
-  # Проверка при каждом изменении кода
   push:
   pull_request:
-
-  # 1. Запуск вручную из вкладки Actions на GitHub (workflow_dispatch)
   workflow_dispatch:
-    inputs:
-      browser:
-        description: 'Browser to run tests'
-        required: true
-        default: 'chromium'
-        type: choice
-        options:
-          - chromium
-          - firefox
-          - webkit
 
-  # 2. Запуск по расписанию: Понедельник - Пятница в 09:00 по Минску (06:00 UTC)
   schedule:
-    - cron: '0 6 * * 1-5' 
+    - cron: 0 8,12 * * 1-5
 
 jobs:
   test:
@@ -28,40 +14,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Клонируем репозиторий
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Устанавливаем Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Устанавливаем зависимости проекта
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
-      # Устанавливаем браузеры Playwright
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      # Java необходима для работы Allure CLI
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Запускаем тесты (передаем переменные окружения из GitHub Secrets, если они нужны)
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --project=chromium
         env:
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          TEST_USER_1_EMAIL: ${{ secrets.TEST_USER_1_EMAIL }}
+          TEST_USER_1_PASSWORD: ${{ secrets.TEST_USER_1_PASSWORD }}
+          TEST_USER_1_FIRST_NAME: ${{ secrets.TEST_USER_1_FIRST_NAME }}
+          TEST_USER_1_LAST_NAME: ${{ secrets.TEST_USER_1_LAST_NAME }}
+          TEST_USER_2_EMAIL: ${{ secrets.TEST_USER_2_EMAIL }}
+          TEST_USER_2_PASSWORD: ${{ secrets.TEST_USER_2_PASSWORD }}
+          TEST_USER_2_FIRST_NAME: ${{ secrets.TEST_USER_2_FIRST_NAME }}
+          TEST_USER_2_LAST_NAME: ${{ secrets.TEST_USER_2_LAST_NAME }}
           BASE_URL: ${{ secrets.BASE_URL }}
 
-      # Генерируем Allure HTML-отчет из результатов
       - name: Generate Allure Report
         if: always()
         run: |
@@ -71,7 +56,6 @@ jobs:
             echo "::warning::No Allure results were generated; skipping report generation."
           fi
 
-      # Сохраняем Allure-отчет в артефактах GitHub
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -81,7 +65,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
-      # Сохраняем HTML-отчет (если он успел создаться)
       - name: Upload HTML Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -91,7 +74,6 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
-      # Сохраняем папку test-results (тут лежат трейсы, видео и скриншоты падений)
       - name: Upload Test Results / Traces
         if: always()
         uses: actions/upload-artifact@v4

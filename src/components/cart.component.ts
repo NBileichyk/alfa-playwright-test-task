@@ -7,7 +7,7 @@ export class CartComponent {
   content: Locator;
   cartText: Locator;
   quantity: Locator;
-  formattedValue: Locator;
+  totalPrice: Locator;
   checkoutLink: Locator;
 
   constructor(page: Page) {
@@ -18,11 +18,10 @@ export class CartComponent {
       .locator('a.link')
       .filter({ hasText: COMMON_CONSTANTS.checkoutLink });
 
-    // Sub-elements inside the content block
     this.content = this.cartWrapper.locator('a.content');
     this.cartText = this.content.getByText(COMMON_CONSTANTS.cartLabel);
     this.quantity = this.content.locator('.quantity');
-    this.formattedValue = this.content.locator('.formatted_value');
+    this.totalPrice = this.content.locator('.formatted_value');
   }
 
   async clickCart() {
@@ -45,7 +44,7 @@ export class CartComponent {
   }
 
   async getTotal(): Promise<number> {
-    const formattedTotal = await this.formattedValue.innerText();
+    const formattedTotal = await this.totalPrice.innerText();
     const amount = formattedTotal.replace(/[^0-9.-]/g, '');
     const total = Number(amount);
 
@@ -64,17 +63,14 @@ export class CartComponent {
     }
   }
 
-  // Verify expected quantity of items in the cart
   async verifyCartQuantity(expectedQuantity: number) {
     await expect(this.quantity).toHaveText(expectedQuantity.toString());
   }
 
-  // Verify expected total price formatted value
   async verifyCartTotal(expectedTotal: number) {
-    await expect(this.formattedValue).toHaveText(`$${expectedTotal.toString()}`);
+    await expect(this.totalPrice).toHaveText(`$${expectedTotal.toFixed(0)}`);
   }
 
-  // Verify that the cart is empty
   async verifyCartIsEmpty() {
     await this.verifyCartQuantity(0);
   }

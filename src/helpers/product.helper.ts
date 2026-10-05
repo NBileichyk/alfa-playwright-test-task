@@ -1,17 +1,7 @@
 import { Locator } from '@playwright/test';
 import { ProductCardComponent } from '../components/product-card.component';
 
-/**
- * Helper functions for product-related operations used across multiple pages.
- * Handles product filtering, selection, and interaction logic.
- */
 export class ProductHelper {
-  /**
-   * Converts a formatted product price (e.g., "$45") to a number.
-   * @param price Formatted product price
-   * @returns Numeric price
-   * @throws Error if the price does not contain a valid number
-   */
   static convertPriceToNumber(price: string): number {
     const normalizedPrice = price.replace(/[^0-9.-]/g, '');
 
@@ -22,12 +12,6 @@ export class ProductHelper {
     return Number(normalizedPrice);
   }
 
-  /**
-   * Filters products within a section based on discount status.
-   * @param sectionLocator Locator of the target section (e.g., homepage sections)
-   * @param isDiscounted true - for discounted products, false - for non-discounted products
-   * @returns Array of ProductCardComponent instances matching the discount status
-   */
   static async getFilteredProducts(
     sectionLocator: Locator,
     isDiscounted: boolean
@@ -50,11 +34,6 @@ export class ProductHelper {
     return filteredProducts;
   }
 
-  /**
-   * Gets all product cards from a section.
-   * @param sectionLocator Locator of the target section
-   * @returns Array of ProductCardComponent instances
-   */
   static async getAllProducts(sectionLocator: Locator): Promise<ProductCardComponent[]> {
     const allProductsInSection = sectionLocator.locator('.product.column.shadow.hover-light');
     const totalCount = await allProductsInSection.count();
@@ -68,12 +47,6 @@ export class ProductHelper {
     return products;
   }
 
-  /**
-   * Finds a product by name within a section.
-   * @param sectionLocator Locator of the target section
-   * @param productName Name of the product to find
-   * @returns ProductCardComponent instance or null if not found
-   */
   static async findProductByName(
     sectionLocator: Locator,
     productName: string
@@ -90,12 +63,6 @@ export class ProductHelper {
     return null;
   }
 
-  /**
-   * Gets a product at a specific index within a section.
-   * @param sectionLocator Locator of the target section
-   * @param index Zero-based index
-   * @returns ProductCardComponent instance or null if index is out of bounds
-   */
   static async getProductByIndex(
     sectionLocator: Locator,
     index: number = 0
@@ -109,14 +76,6 @@ export class ProductHelper {
     return products[index];
   }
 
-  /**
-   * Gets a product by discount status at a specific index.
-   * @param sectionLocator Locator of the target section
-   * @param isDiscounted Whether to get a discounted product (true) or non-discounted (false)
-   * @param index Zero-based index among products matching the discount status
-   * @returns ProductCardComponent instance
-   * @throws Error if product not found or index out of bounds
-   */
   static async getProductByDiscountStatus(
     sectionLocator: Locator,
     isDiscounted: boolean,
@@ -138,13 +97,6 @@ export class ProductHelper {
     return matchingProducts[index];
   }
 
-  /**
-   * Clicks a product by its discount status and optional index.
-   * @param sectionLocator Locator of the target section
-   * @param isDiscounted Whether to select a discounted product (true) or non-discounted (false)
-   * @param index Zero-based index among products matching the discount status
-   * @throws Error if product not found or index out of bounds
-   */
   static async clickProductByDiscountStatus(
     sectionLocator: Locator,
     isDiscounted: boolean,
@@ -158,12 +110,6 @@ export class ProductHelper {
     await product.clickImage();
   }
 
-  /**
-   * Clicks a product by name within a section.
-   * @param sectionLocator Locator of the target section
-   * @param productName Name of the product to click
-   * @throws Error if product not found
-   */
   static async clickProductByName(sectionLocator: Locator, productName: string): Promise<void> {
     const product = await ProductHelper.findProductByName(sectionLocator, productName);
 
@@ -174,12 +120,6 @@ export class ProductHelper {
     await product.clickImage();
   }
 
-  /**
-   * Clicks a product at a specific index within a section.
-   * @param sectionLocator Locator of the target section
-   * @param index Zero-based index
-   * @throws Error if product not found
-   */
   static async clickProductByIndex(sectionLocator: Locator, index: number = 0): Promise<void> {
     const product = await ProductHelper.getProductByIndex(sectionLocator, index);
 
