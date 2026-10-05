@@ -28,7 +28,7 @@ export class CategoryPage extends BasePage {
     return this.page.url();
   }
 
-  async openProductByIndex(index: number): Promise<SelectedProduct> {
+  async selectProductByIndex(index: number): Promise<SelectedProduct> {
     const product = await this.products.getProductByIndex(index);
     const selectedProduct = {
       name: await product.getProductName(),

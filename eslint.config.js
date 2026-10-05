@@ -5,6 +5,9 @@ import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 
 export default tseslint.config(
+  {
+    ignores: ['allure-report/**', 'allure-results/**', 'playwright-report/**', 'test-results/**'],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   playwright.configs['flat/recommended'],

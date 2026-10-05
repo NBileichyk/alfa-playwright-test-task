@@ -42,7 +42,6 @@ export class ProductPage extends BasePage {
     await this.addProducts(1);
   }
 
-  // Метод инкапсулирует логику выбора опций, а селектор опций объявлен прямо здесь внутри
   private async selectAvailableOptions() {
     const optionSelects = this.page.locator('#box-product select');
     const selectCount = await optionSelects.count();
