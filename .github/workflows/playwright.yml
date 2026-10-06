@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
   schedule:
-    # Runs on weekdays (Mon-Fri) at 8:00 AM, 12:00 PM, and 1:00 PM Minsk time (UTC+3)
-    - cron: '0 5,9,10 * * 1-5'
+    # Runs on weekdays (Mon-Fri) at 3:00 PM Minsk time (UTC+3)
+    - cron: '0 12 * * 1-5'
 
 jobs:
   test:
