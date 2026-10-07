@@ -4,7 +4,6 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-
   schedule:
     # Runs on weekdays (Mon-Fri) at 3:00 PM Minsk time (UTC+3)
     - cron: '0 12 * * 1-5'
@@ -15,26 +14,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout repository code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # 3. Install project dependencies
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      # 4. Install Playwright browsers with system dependencies
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
+      # 5. Set up Java (required for Allure CLI report generation)
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      # 6. Run Playwright tests and pass environment secrets
       - name: Run Playwright tests
         run: npx playwright test --project=chromium
         env:
@@ -48,16 +53,18 @@ jobs:
           TEST_USER_2_LAST_NAME: ${{ secrets.TEST_USER_2_LAST_NAME }}
           BASE_URL: ${{ secrets.BASE_URL }}
 
+      # 7. Generate Allure HTML report from results
       - name: Generate Allure Report
         if: always()
         run: |
-          if [ -n "$(find allure-results -type f -print -quit 2>/dev/null)" ]; then
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results)" ]; then
             npx allure generate allure-results --clean -o allure-report
           else
             echo "::warning::No Allure results were generated; skipping report generation."
           fi
 
-      - name: Upload Allure Report
+      # 8. Upload Allure Report as an artifact (backup)
+      - name: Upload Allure Report Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -66,6 +73,16 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+      # 9. Deploy Allure Report to GitHub Pages
+      - name: Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          clean: true
+      
+      # 10. Upload HTML Report
       - name: Upload HTML Report
         if: always()
         uses: actions/upload-artifact@v4
@@ -75,6 +92,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+      # 11. Upload Test Results / Traces
       - name: Upload Test Results / Traces
         if: always()
         uses: actions/upload-artifact@v4
