@@ -93,11 +93,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
-      # 11. Deploy Allure Report to GitHub Pages (MUST BE THE LAST STEP)
-      - name: Deploy Allure Report to GitHub Pages
+      # 11. Copy/Prepare allure-report for GitHub Pages
+      - name: Deploy to GitHub Pages
         if: always()
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
-          clean: true
+        uses: actions/configure-pages@v4
