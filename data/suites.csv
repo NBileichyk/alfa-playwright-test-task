@@ -1,0 +1,6 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","7525","Reject invalid credentials","chromium","2026-10-07","passed","2026-10-07","Invalid login","login.spec.ts","",""
+"","13055","Complete order without discount","chromium","2026-10-07","passed","2026-10-07","Order a product without discount","orders.spec.ts","",""
+"","4951","Log in with valid credentials","chromium","2026-10-07","passed","2026-10-07","Valid login","login.spec.ts","",""
+"","13051","Complete order with discount","chromium","2026-10-07","passed","2026-10-07","Order a product with discount","orders.spec.ts","",""
+"","9752","Order two products without signing in","chromium","2026-10-07","passed","2026-10-07","Guest checkout","guest-orders.spec.ts","",""
