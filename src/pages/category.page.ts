@@ -1,11 +1,7 @@
 import { Locator, Page } from '@playwright/test';
 import { ProductSectionComponent } from '../components/product-section.component';
+import type { SelectedProduct } from '../types/selected-product.interface';
 import { BasePage } from './base.page';
-
-export type SelectedProduct = {
-  name: string;
-  url: string;
-};
 
 export class CategoryPage extends BasePage {
   categoryTitle: Locator;

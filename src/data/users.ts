@@ -1,20 +1,14 @@
-export type UserRole = 'standardUser_1' | 'standardUser_2';
-
-export type UserData = {
-  email: string;
-  password: string;
-  firstName?: string;
-  lastName?: string;
-};
+import { UserRole } from '../enums/user-role.enum';
+import type { UserData } from '../types/user-data.interface';
 
 const userEnvironmentKeys: Record<UserRole, Record<keyof UserData, string>> = {
-  standardUser_1: {
+  [UserRole.STANDARD_USER_1]: {
     email: 'TEST_USER_1_EMAIL',
     password: 'TEST_USER_1_PASSWORD',
     firstName: 'TEST_USER_1_FIRST_NAME',
     lastName: 'TEST_USER_1_LAST_NAME',
   },
-  standardUser_2: {
+  [UserRole.STANDARD_USER_2]: {
     email: 'TEST_USER_2_EMAIL',
     password: 'TEST_USER_2_PASSWORD',
     firstName: 'TEST_USER_2_FIRST_NAME',
@@ -37,7 +31,7 @@ export function getUser(role: UserRole): UserData {
   };
 
   const optionalName = (key: string): string | undefined => optionalValue(key);
-  const isLegacyFirstUser = role === 'standardUser_1';
+  const isLegacyFirstUser = role === UserRole.STANDARD_USER_1;
 
   return {
     email: requiredValue(environmentKeys.email, isLegacyFirstUser ? 'TEST_USER_EMAIL' : undefined),

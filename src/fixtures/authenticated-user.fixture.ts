@@ -1,5 +1,7 @@
 import { test as base } from './page.fixtures';
-import { getUser, type UserData, type UserRole } from '../data/users';
+import { UserRole } from '../enums/user-role.enum';
+import { getUser } from '../data/users';
+import type { UserData } from '../types/user-data.interface';
 
 type AuthenticatedUserFixtures = {
   loggedInUser: void;
@@ -8,7 +10,7 @@ type AuthenticatedUserFixtures = {
 };
 
 export const authenticatedTest = base.extend<AuthenticatedUserFixtures>({
-  userRole: ['standardUser_1', { option: true }],
+  userRole: [UserRole.STANDARD_USER_1, { option: true }],
 
   currentUser: async ({ userRole }, use) => {
     await use(getUser(userRole));

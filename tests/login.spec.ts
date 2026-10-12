@@ -1,9 +1,10 @@
+import { UserRole } from '../src/enums/user-role.enum';
 import { test, expect } from '../src/fixtures/page.fixtures';
 import { getUser, invalidUser } from '../src/data/users';
 
 test.describe('Valid login', () => {
   test('Log in with valid credentials', async ({ loginPage }) => {
-    const user = getUser('standardUser_1');
+    const user = getUser(UserRole.STANDARD_USER_1);
 
     await test.step('Submit valid credentials', async () => {
       await loginPage.navigate('/login');
