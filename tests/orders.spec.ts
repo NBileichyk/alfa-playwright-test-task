@@ -46,8 +46,7 @@ for (const scenario of orderScenarios) {
       });
 
       await test.step(`Select a ${isDiscounted ? 'discounted' : 'non-discounted'} product`, async () => {
-        const selectedProduct = await ProductHelper.getProductByDiscountStatus(
-          categoryPage.products.locator,
+        const selectedProduct = await categoryPage.products.getProductByDiscountStatus(
           isDiscounted,
           productIndex
         );

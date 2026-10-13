@@ -1,20 +1,16 @@
 import { Locator } from '@playwright/test';
 
 export class ProductCardComponent {
-  searchIcon: Locator;
   imageWrapper: Locator;
   name: Locator;
-  manufacturer: Locator;
   regularPrice: Locator;
   campaignPrice: Locator;
   price: Locator;
   saleSticker: Locator;
 
   constructor(private productCardLocator: Locator) {
-    this.searchIcon = productCardLocator.locator('.fa-search');
     this.imageWrapper = productCardLocator.locator('.image-wrapper');
     this.name = productCardLocator.locator('.name');
-    this.manufacturer = productCardLocator.locator('.manufacturer');
     this.regularPrice = productCardLocator.locator('.regular-price');
     this.campaignPrice = productCardLocator.locator('.campaign-price');
     this.price = productCardLocator.locator('.price');

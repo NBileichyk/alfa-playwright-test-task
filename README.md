@@ -124,7 +124,7 @@ directories are ignored by Git and ESLint.
 ## GitHub Actions
 
 The workflow in `.github/workflows/playwright.yml` runs on pushes, pull
-requests, manual dispatch, and weekdays at 06:17 UTC (09:17 Minsk time). GitHub
+requests, manual dispatch, and weekdays at 12:00 UTC (15:00 Minsk time). GitHub
 scheduled workflows run only from the repository's default branch and may be
 delayed during periods of high Actions load. It installs Node.js 20, Chromium,
 and Java 17, runs the tests, and uploads:
