@@ -1,25 +1,14 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { COMMON_CONSTANTS } from '../constants/common.constants';
 
 export class CartComponent {
   cartWrapper: Locator;
-  image: Locator;
   content: Locator;
-  cartText: Locator;
   quantity: Locator;
   totalPrice: Locator;
-  checkoutLink: Locator;
 
   constructor(page: Page) {
     this.cartWrapper = page.locator('#cart-wrapper > #cart');
-
-    this.image = this.cartWrapper.locator('a.image');
-    this.checkoutLink = this.cartWrapper
-      .locator('a.link')
-      .filter({ hasText: COMMON_CONSTANTS.checkoutLink });
-
     this.content = this.cartWrapper.locator('a.content');
-    this.cartText = this.content.getByText(COMMON_CONSTANTS.cartLabel);
     this.quantity = this.content.locator('.quantity');
     this.totalPrice = this.content.locator('.formatted_value');
   }
@@ -28,19 +17,8 @@ export class CartComponent {
     await this.cartWrapper.click();
   }
 
-  async clickCheckoutLink() {
-    await this.checkoutLink.click();
-  }
-
   async verifyCartIsVisible() {
     await expect(this.cartWrapper).toBeVisible();
-  }
-
-  async hasItems(): Promise<boolean> {
-    const quantityText = await this.quantity.textContent();
-    const matches = (quantityText ?? '').match(/\d+/);
-    const quantity = matches ? parseInt(matches[0], 10) : 0;
-    return quantity > 0;
   }
 
   async getTotal(): Promise<number> {
@@ -69,9 +47,5 @@ export class CartComponent {
 
   async verifyCartTotal(expectedTotal: number) {
     await expect(this.totalPrice).toHaveText(`$${expectedTotal.toFixed(0)}`);
-  }
-
-  async verifyCartIsEmpty() {
-    await this.verifyCartQuantity(0);
   }
 }

@@ -3,7 +3,6 @@ import { CHECKOUT_PAGE_CONSTANTS } from '../constants/checkout.constants';
 import { BasePage } from './base.page';
 
 export class CheckoutPage extends BasePage {
-  backLink: Locator;
   emptyCartMessage: Locator;
   confirmOrderButton: Locator;
   orderSuccessMessage: Locator;
@@ -11,15 +10,11 @@ export class CheckoutPage extends BasePage {
   firstNameInput: Locator;
   lastNameInput: Locator;
   emailInput: Locator;
-  shippingAddressSection: Locator;
-  shippingAddressCheckbox: Locator;
   orderSummaryTable: Locator;
-  commentSection: Locator;
   removeCartItemButtons: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.backLink = page.getByRole('link').getByText(CHECKOUT_PAGE_CONSTANTS.backLink);
     this.emptyCartMessage = page.getByText(CHECKOUT_PAGE_CONSTANTS.emptyCartMessage);
     this.orderSuccessMessage = page.getByRole('heading', {
       name: CHECKOUT_PAGE_CONSTANTS.orderSuccessMessage,
@@ -28,12 +23,9 @@ export class CheckoutPage extends BasePage {
     this.firstNameInput = this.billingAddressSection.locator('input[name="firstname"]');
     this.lastNameInput = this.billingAddressSection.locator('input[name="lastname"]');
     this.emailInput = this.billingAddressSection.locator('input[name="email"]');
-    this.shippingAddressSection = page.locator('.shipping-address');
-    this.shippingAddressCheckbox = page.locator('input[name="different_shipping_address"]');
     this.orderSummaryTable = page.locator(
       'xpath=//*[@id="order_confirmation-wrapper"]//table[contains(concat(" ", normalize-space(@class), " "), " dataTable ")]'
     );
-    this.commentSection = page.locator('textarea[name="comments"]');
     this.confirmOrderButton = page.locator('button[name="confirm_order"][value="Confirm Order"]');
     this.removeCartItemButtons = page.getByRole('button', { name: 'Remove', exact: true });
   }
@@ -75,10 +67,6 @@ export class CheckoutPage extends BasePage {
     if ((await this.removeCartItemButtons.count()) > 0) {
       await this.clearCart();
     }
-  }
-
-  async clickBackLink() {
-    await this.backLink.click();
   }
 
   async clickConfirmOrder() {

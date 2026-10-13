@@ -92,8 +92,3 @@ jobs:
           path: allure-report/
           if-no-files-found: ignore
           retention-days: 30
-
-      # 11. Copy/Prepare allure-report for GitHub Pages
-      - name: Deploy to GitHub Pages
-        if: always()
-        uses: actions/configure-pages@v4

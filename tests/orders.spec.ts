@@ -1,3 +1,4 @@
+import { UserRole } from '../src/enums/user-role.enum';
 import { authenticatedTest as test } from '../src/fixtures/authenticated-user.fixture';
 import { expect } from '../src/fixtures/page.fixtures';
 import { ProductHelper } from '../src/helpers/product.helper';
@@ -5,7 +6,7 @@ import { ProductHelper } from '../src/helpers/product.helper';
 const orderScenarios = [
   {
     title: 'Order a product without discount',
-    userRole: 'standardUser_1' as const,
+    userRole: UserRole.STANDARD_USER_1,
     isDiscounted: false,
     productIndex: 1,
     expectedQuantity: 3,
@@ -14,7 +15,7 @@ const orderScenarios = [
   },
   {
     title: 'Order a product with discount',
-    userRole: 'standardUser_2' as const,
+    userRole: UserRole.STANDARD_USER_2,
     isDiscounted: true,
     productIndex: 0,
     expectedQuantity: 2,
@@ -45,8 +46,7 @@ for (const scenario of orderScenarios) {
       });
 
       await test.step(`Select a ${isDiscounted ? 'discounted' : 'non-discounted'} product`, async () => {
-        const selectedProduct = await ProductHelper.getProductByDiscountStatus(
-          categoryPage.products.locator,
+        const selectedProduct = await categoryPage.products.getProductByDiscountStatus(
           isDiscounted,
           productIndex
         );

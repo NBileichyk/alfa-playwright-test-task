@@ -47,22 +47,6 @@ export class ProductHelper {
     return products;
   }
 
-  static async findProductByName(
-    sectionLocator: Locator,
-    productName: string
-  ): Promise<ProductCardComponent | null> {
-    const products = await ProductHelper.getAllProducts(sectionLocator);
-
-    for (const product of products) {
-      const name = await product.getProductName();
-      if (name === productName) {
-        return product;
-      }
-    }
-
-    return null;
-  }
-
   static async getProductByIndex(
     sectionLocator: Locator,
     index: number = 0
@@ -95,38 +79,5 @@ export class ProductHelper {
     }
 
     return matchingProducts[index];
-  }
-
-  static async clickProductByDiscountStatus(
-    sectionLocator: Locator,
-    isDiscounted: boolean,
-    index: number = 0
-  ): Promise<void> {
-    const product = await ProductHelper.getProductByDiscountStatus(
-      sectionLocator,
-      isDiscounted,
-      index
-    );
-    await product.clickImage();
-  }
-
-  static async clickProductByName(sectionLocator: Locator, productName: string): Promise<void> {
-    const product = await ProductHelper.findProductByName(sectionLocator, productName);
-
-    if (!product) {
-      throw new Error(`Product "${productName}" not found in the specified section.`);
-    }
-
-    await product.clickImage();
-  }
-
-  static async clickProductByIndex(sectionLocator: Locator, index: number = 0): Promise<void> {
-    const product = await ProductHelper.getProductByIndex(sectionLocator, index);
-
-    if (!product) {
-      throw new Error(`No product found at index ${index} in the specified section.`);
-    }
-
-    await product.clickImage();
   }
 }
