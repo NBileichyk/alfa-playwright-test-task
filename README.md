@@ -39,10 +39,9 @@ TEST_USER_2_LAST_NAME=
 
 Use dedicated test accounts only; never put real or production credentials in
 source control. Configure the same `TEST_USER_*` values as GitHub Actions
-repository secrets to run the CI workflow. For compatibility, account 1 also
-accepts the legacy `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` names. Account
-first and last names are optional and are only used to check the displayed name
-in the successful-login notice.
+repository secrets to run the CI workflow. Account first and last names are
+optional and are only used to check the displayed name in the successful-login
+notice.
 
 ## Running tests
 

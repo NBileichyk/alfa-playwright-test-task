@@ -26,7 +26,7 @@ export class CategoryPage extends BasePage {
 
   async selectProductByIndex(index: number): Promise<SelectedProduct> {
     const product = await this.products.getProductByIndex(index);
-    const selectedProduct = {
+    const selectedProduct: SelectedProduct = {
       name: await product.getProductName(),
       url: await product.getProductUrl(),
     };
