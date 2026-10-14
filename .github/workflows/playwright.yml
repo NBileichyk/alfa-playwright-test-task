@@ -39,6 +39,20 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      # 6. Run Playwright tests and pass environment secrets
+      - name: Run Playwright tests
+        run: npx playwright test --project=chromium
+        env:
+          TEST_USER_1_EMAIL: ${{ secrets.TEST_USER_1_EMAIL }}
+          TEST_USER_1_PASSWORD: ${{ secrets.TEST_USER_1_PASSWORD }}
+          TEST_USER_1_FIRST_NAME: ${{ secrets.TEST_USER_1_FIRST_NAME }}
+          TEST_USER_1_LAST_NAME: ${{ secrets.TEST_USER_1_LAST_NAME }}
+          TEST_USER_2_EMAIL: ${{ secrets.TEST_USER_2_EMAIL }}
+          TEST_USER_2_PASSWORD: ${{ secrets.TEST_USER_2_PASSWORD }}
+          TEST_USER_2_FIRST_NAME: ${{ secrets.TEST_USER_2_FIRST_NAME }}
+          TEST_USER_2_LAST_NAME: ${{ secrets.TEST_USER_2_LAST_NAME }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+
       # 7. Generate Allure HTML report from results
       - name: Generate Allure Report
         if: always()
