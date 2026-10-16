@@ -135,4 +135,10 @@ and Java 17, runs the tests, and uploads:
   (7-day retention).
 
 Download these artifacts from the completed workflow run in the GitHub Actions
-tab. Manual, push, pull-request, and scheduled runs all use Chromium.
+tab. Reports from runs on the default branch are also published to GitHub Pages;
+the deployment URL appears in the `deploy-allure-report` job. Pull requests and
+non-default branches do not publish the shared page. Manual, push,
+pull-request, and scheduled runs all use Chromium.
+
+Before the first deployment, set the repository's Pages source to **GitHub
+Actions** in **Settings > Pages**.
