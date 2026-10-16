@@ -2,7 +2,7 @@ import { UserRole } from '../src/enums/user-role.enum';
 import { test, expect } from '../src/fixtures/page.fixtures';
 import { getUser, invalidUser } from '../src/data/users';
 
-test.describe('Valid login', () => {
+test.describe('Valid login', { tag: ['@smoke', '@regression', '@login'] }, () => {
   test('Log in with valid credentials', async ({ loginPage }) => {
     const user = getUser(UserRole.STANDARD_USER_1);
 
@@ -18,7 +18,7 @@ test.describe('Valid login', () => {
   });
 });
 
-test.describe('Invalid login', () => {
+test.describe('Invalid login', { tag: ['@regression', '@login'] }, () => {
   test('Reject invalid credentials', async ({ loginPage }) => {
     await test.step('Submit invalid credentials', async () => {
       await loginPage.navigate('/login');
